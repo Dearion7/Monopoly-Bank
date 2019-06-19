@@ -1,0 +1,18 @@
+#!/bin/bash
+# Bank API
+#
+# description: Run the Bank API for project 3/4
+
+case $1 in
+	start)
+		/bin/bash /home/ubuntu-0959846/Monopoly-Bank/bankApi-start.sh
+	;;
+	stop)
+		/bin/bash /home/ubuntu-0959846/Monopoly-Bank/bankApi-stop.sh
+	;;
+	restart)
+		/bin/bash /home/ubuntu-0959846/Monopoly-Bank/bankApi-start.sh
+		/bin/bash /home/ubuntu-0959846/Monopoly-Bank/bankApi-stop.sh
+	;;
+esac
+exit 0
