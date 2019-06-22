@@ -6,18 +6,30 @@ import java.net.SocketTimeoutException;
 
 public class ClientHandler extends Thread {
 
+	/* Server connection */
     final DataInputStream dis;
     final DataOutputStream dos;
     final Socket socket;
     final Database database = new Database();
     Communication comm = new Communication();
-
+	
+	/* Noob connection */
+	Master master = new Master();
+	Slave slave = new Slave();
+	Thread masterThread = new Thread(master);
+	Thread slaveThread = new Thread(slave);
+	
     ClientHandler(Socket socket, DataInputStream dis, DataOutputStream dos) {
         this.socket = socket;
         this.dis = dis;
         this.dos = dos;
     }
 
+	public void start() {
+		masterThread.start();
+		slaveThread.start();
+	}
+	
     @Override
     public void run() {
         String message;
