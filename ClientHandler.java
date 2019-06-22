@@ -51,29 +51,29 @@ public class ClientHandler extends Thread {
                 switch (message) {
                     case "iban":
                         comm.setIban(dis.readUTF());
-						String landCode = comm.getIban().substring(0, 2);
-						String bankCode = comm.getIban().substring(3, 8);
-						ibanCheck = landCode + bankCode;
-						System.out.println(ibanCheck);
-						if (ibanCheck.equals("SUMYBK")) {
-							dos.writeBoolean(database.checkIban(comm.getIban()));
+			String landCode = comm.getIban().substring(0, 2);
+			String bankCode = comm.getIban().substring(3, 8);
+			ibanCheck = landCode + bankCode;
+			System.out.println(ibanCheck);
+			if (ibanCheck.equals("SUMYBK")) {
+				dos.writeBoolean(database.checkIban(comm.getIban()));
                         	break;	
-						} else {
-							master.setBankName(ibanCheck);
-							master.setIban(comm.getIban();
-							dos.writeBoolean(true);
-							break;
-						}
+			} else {
+				master.setBankName(ibanCheck);
+				master.setIban(comm.getIban();
+				dos.writeBoolean(true);
+				break;
+			}
                     case "pin":
                         comm.setPin(dis.readInt());
-						if (ibanCheck.equals("SUMYBK)) {
-							dos.writeBoolean(database.checkPin(comm.getIban(), comm.getPin()));
-							break;
-						} else {
-							master.setPin(String.valueOf(comm.getPin()));
-							master.setMessage("checkPin");
-							break;
-						}
+			if (ibanCheck.equals("SUMYBK)) {
+				dos.writeBoolean(database.checkPin(comm.getIban(), comm.getPin()));
+				break;
+			} else {
+				master.setPin(String.valueOf(comm.getPin()));
+				master.setMessage("checkPin");
+				break;
+			}
                     case "amount":
                         comm.setAmount(Integer.parseInt(dis.readUTF()));
                         break;
@@ -85,16 +85,16 @@ public class ClientHandler extends Thread {
                         break;
                     case "withdraw":
                         comm.setAmount(Integer.parseInt(dis.readUTF()));
-						int balance = database.checkSaldo(comm.getIban(), comm.getPin());
-						if (balance - comm.getAmount() >= 0) {
-                            database.withdraw(comm.getIban(), comm.getPin(), comm.getAmount());
-                            dos.writeBoolean(true);
-                            comm.setIban("");
-                            comm.setPin(0);
-                            comm.setAmount(0);
-						} else {
-			    			dos.writeBoolean(false);
-						}
+			int balance2 = database.checkSaldo(comm.getIban(), comm.getPin());
+			if (balance2 - comm.getAmount() >= 0) {
+                        	database.withdraw(comm.getIban(), comm.getPin(), comm.getAmount());
+                            	dos.writeBoolean(true);
+                            	comm.setIban("");
+                            	comm.setPin(0);
+                            	comm.setAmount(0);
+			} else {
+	 			dos.writeBoolean(false);
+			}
                         break;
                     case "reset":
                         if (comm.getIban().isEmpty() && comm.getPin() == 0 && comm.getAmount() == 0) {
