@@ -11,6 +11,7 @@ public class Master implements Runnable {
     private String iban = "SU74MYBK320461";
     private String pin = "5246";
     private String amount = "10";
+    private String message = null;
 
     /* Setters */
     public void setAmount(double amount) {
@@ -29,12 +30,15 @@ public class Master implements Runnable {
         this.pin = pin;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     /* NOOB server connection */
     @SuppressWarnings("unchecked")
     public JSONObject withdraw() {
         JSONObject object = new JSONObject();
 
-        object.put("IDRecBank", bankName);
         object.put("IDRecBank", bankName);
         object.put("IDSenBank", "SUMYBK");
         object.put("Func", "withdraw");
@@ -80,7 +84,7 @@ public class Master implements Runnable {
             container = ContainerProvider.getWebSocketContainer();
             session = container.connectToServer (this, URI.create ("ws://145.24.222.24:8080"));
             session.getAsyncRemote () .sendText ("[\"register\", \"master\", \"SUMYBK\"]");
-            session.getAsyncRemote().sendText("[\"COBBCO\"," + withdraw() + "]");
+            session.getAsyncRemote().sendText("[\"" + bankName + "\"," + withdraw() + "]");
             waitForTerminationSignal ();
         }
         catch (Exception exception) {
