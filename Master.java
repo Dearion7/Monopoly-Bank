@@ -31,7 +31,7 @@ public class Master implements Runnable {
     }
 
     public String getMessage() {
-        return message
+        return message;
     }
 
     /* NOOB server connection */
