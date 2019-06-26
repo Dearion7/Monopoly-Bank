@@ -17,7 +17,7 @@ public class ClientHandler extends Thread {
     Communication comm = new Communication();
 
     /* Noob connection */
-    Master master
+    Master master;
 
     ClientHandler(Socket socket, DataInputStream dis, DataOutputStream dos, Master master) {
         this.socket = socket;
@@ -86,7 +86,7 @@ public class ClientHandler extends Thread {
                         break;
                     case "withdraw":
                         comm.setAmount(Integer.parseInt(dis.readUTF()));
-                        if (ibanCheck.equals("SUMYBK") {
+                        if (ibanCheck.equals("SUMYBK")) {
                             int balance2 = database.checkSaldo(comm.getIban(), comm.getPin());
                             if (balance2 - comm.getAmount() >= 0) {
                                 database.withdraw(comm.getIban(), comm.getPin(), comm.getAmount());
@@ -119,7 +119,7 @@ public class ClientHandler extends Thread {
                         }
                         break;
                     case "updateAttempts":
-                        if (ibanCheck.equals("SUMYBK") {
+                        if (ibanCheck.equals("SUMYBK")) {
                             comm.setAttempts(dis.readInt());
                             database.updateAttempts(comm.getAttempts(), comm.getIban());
                         } else {
