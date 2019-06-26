@@ -12,6 +12,10 @@ public class Master implements Runnable {
     private String pin = null;
     private String amount = null;
     private String message = null;
+    
+    /* Websockets instances */
+    WebSocketContainer container = null;//
+    Session session = null;
 
     /* Setters */
     public void setAmount(double amount) {
@@ -84,8 +88,6 @@ public class Master implements Runnable {
 
     @Override
     public void run() {
-        WebSocketContainer container = null;//
-        Session session = null;
         try{
             container = ContainerProvider.getWebSocketContainer();
             session = container.connectToServer (this, URI.create ("ws://145.24.222.24:8080"));
