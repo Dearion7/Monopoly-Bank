@@ -48,7 +48,7 @@ public class ClientHandler extends Thread {
                 switch (message) {
                     case "iban":
                         comm.setIban(dis.readUTF());
-                        String landCode = comm.getIban().substring(0, 2);
+                        String landCode = comm.getIban().substring(0, 1);
                         String bankCode = comm.getIban().substring(3, 8);
                         ibanCheck = landCode + bankCode;
                         System.out.println(ibanCheck);
