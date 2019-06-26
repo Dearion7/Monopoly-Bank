@@ -98,16 +98,16 @@ public class ClientHandler extends Thread {
                                 dos.writeBoolean(false);
                             }
                         } else {
-                            master.setAmount(dis.readUTF());
+                            master.setAmount(Double.parseDouble(dis.readUTF()));
                             object = master.withdraw();
                             master.sendText(ibanCheck, object);
                             if (Boolean.parseBoolean(master.getMessage())) {
-                                dos.writeBoolean("true");
+                                dos.writeBoolean(true);
                                 comm.setIban("");
                                 comm.setPin(0);
                                 comm.setAmount(0);
                             } else {
-                                dos.write("false");
+                                dos.writeBoolean(false);
                             }
                         }
                         break;
