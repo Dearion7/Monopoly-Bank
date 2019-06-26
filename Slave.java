@@ -59,7 +59,20 @@ public class Slave implements Runnable {
         }
     }
 
-    
+    public String withdrawDatabase() {
+        String IDSendBank = valuables[3];
+        String IBAN = valuables[7];
+        String Pin = valuables[11];
+        String Amount = valuables[19];
+        int amount = Integer.parseInt(Amount);
+        System.out.println(IDSendBank + " ask for a withdraw");
+        if (database.checkSaldo(IBAN, Integer.parseInt(Pin) >= amount) {
+            if (database.withdraw(IBAN, Integer.parseInt(Pin), amount)) {
+                return "true";
+            }
+        }
+        return "false";
+    }
             
     private static void  waitForTerminationSignal () {
         synchronized (waitLock) {
