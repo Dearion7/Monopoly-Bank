@@ -1,15 +1,66 @@
 import javax.websocket.*;
 import java.net.URI;
+import java.io.IOException;
 
 @ClientEndpoint
 public class Slave implements Runnable {
     private static Object waitLock = new Object ();
-
+    private String[] valuables;
+    prvate Database database;
+    private String IDRecBank = "";
+    
+    Slave(Database database) {
+        this.database = database;
+    }
+    
     @OnMessage
-    public void onMessage( String message) {
-        System.out.println ("Received slave msg: " + message);
+    public void onMessage( String message, Session session) {
+        if (session != null) {
+            System.out.println ("Received slave msg: " + message);
+            valuables = message.split("\"");
+            if (!(message.equals("true")) && !(message.equals("false"))) {
+                switch (valuables.length) {
+                    case 25:
+                        sendMessage(session, withdrawDatabase());
+                        break;
+                    case 21:
+                        sendMessage(session, pinCheckDatabase());
+                        break;
+                    default:
+                        System.out.println("no variables available");
+                        System.out.println(valuables.length);
+                        break;
+                }
+            }
+        }
+    }
+    
+    public void sendMessage(Session session, String result) {
+        try {
+            System.out.println("Result: " + result);
+            session.getAsyncRemote().sendText(result);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+    
+    public String pinCheckDatabase() {
+        String IDSendBank = valuables[3];
+        String accountCheck = valuables[5];
+        String IBAN = valuables[7];
+        String Pin = valuables[11];
+        String Func = valuables[15];
+        String IDRecBank = valuables[19];
+        System.out.println(IDSendBank + " ask for a pin check.");
+        if (database.checkPin(IBAN, Integer.parseInt(Pin)) {
+            return "true";
+        } else {
+            return "false";
+        }
     }
 
+    
+            
     private static void  waitForTerminationSignal () {
         synchronized (waitLock) {
             try {
