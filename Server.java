@@ -8,7 +8,7 @@ public class Server {
         ServerSocket serverSocket = new ServerSocket(8080);
         Master master = new Master();
         new Thread(master).start();
-        
+        new Thread(new Slave(new Database())).start();
 
         // running infinite loop for getting client requests
         while (true) {
@@ -25,7 +25,7 @@ public class Server {
                 System.out.println("Assigning new thread for this client");
 
                 // create a new thread object
-                Thread thread = new ClientHandler(socket, dataInputStream, dataOutputStream);
+                Thread thread = new ClientHandler(socket, dataInputStream, dataOutputStream, master);
 
                 // Start thread
                 thread.start();
