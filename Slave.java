@@ -8,7 +8,7 @@ public class Slave implements Runnable {
     private String[] valuables;
     prvate Database database;
     private String IDRecBank = "";
-    Communication comm = new Communication;
+    Communication comm = new Communication();
     
     Slave(Database database) {
         this.database = database;
@@ -53,7 +53,7 @@ public class Slave implements Runnable {
         String Func = valuables[15];
         String IDRecBank = valuables[19];
         System.out.println(IDSendBank + " ask for a pin check.");
-        if (database.checkPin(IBAN, Integer.parseInt(Pin) && !database.checkBocked(IBAN)) {
+        if (database.checkPin(IBAN, Integer.parseInt(Pin) && !database.checkBocked(IBAN))) {
             return "true";
         } else {
             return "false";
@@ -67,8 +67,8 @@ public class Slave implements Runnable {
         String Amount = valuables[19];
         int amount = Integer.parseInt(Amount);
         System.out.println(IDSendBank + " ask for a withdraw");
-        if (database.checkSaldo(IBAN, Integer.parseInt(Pin) >= amount) {
-            if (database.withdraw(IBAN, Integer.parseInt(Pin), amount)) {
+        if (database.checkSaldo(IBAN, Integer.parseInt(Pin)) >= amount) {
+            if (database.withdraw(IBAN, Integer.parseInt(Pin)), amount)) {
                 return "true";
             }
         }
