@@ -3,6 +3,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import org.json.simple.*;
 
 public class ClientHandler extends Thread {
 
@@ -10,30 +11,26 @@ public class ClientHandler extends Thread {
     final DataInputStream dis;
     final DataOutputStream dos;
     final Socket socket;
+    
+    /* Database connection */
     final Database database = new Database();
     Communication comm = new Communication();
 
     /* Noob connection */
-    Master master = new Master();
-    Slave slave = new Slave();
-    Thread masterThread = new Thread(master);
-    Thread slaveThread = new Thread(slave);
+    Master master
 
-    ClientHandler(Socket socket, DataInputStream dis, DataOutputStream dos) {
+    ClientHandler(Socket socket, DataInputStream dis, DataOutputStream dos, Master master) {
         this.socket = socket;
         this.dis = dis;
         this.dos = dos;
-        start();
-    }
-
-    public void start() {
-        masterThread.start();
-        slaveThread.start();
+        this.master = master;    
     }
 
     @Override
     public void run() {
         String message;
+        boolean ownCard = true;
+        JSONObject object;
         String ibanCheck = null;
         while (true) {
             try {
@@ -65,35 +62,53 @@ public class ClientHandler extends Thread {
                             break;
                         }
                     case "pin":
+                        boolean checked;
                         comm.setPin(dis.readInt());
                         if (ibanCheck.equals("SUMYBK")) {
-                            dos.writeBoolean(database.checkPin(comm.getIban(), comm.getPin()));
-                            break;
+                            checked = database.checkPin(comm.getIban(), comm.getPin());
                         } else {
                             master.setPin(String.valueOf(comm.getPin()));
-                            master.setMessage("checkPin");
-                            break;
+                            object = master.checkPin();
+                            master.sendText(ibanCheck, object);
+                            checked = Boolean.parseBoolean(master.getMessage());
                         }
-                    case "amount":
-                        comm.setAmount(Integer.parseInt(dis.readUTF()));
+                        dos.writeBoolean(checked);
                         break;
                     case "balance":
                         String iban = dis.readUTF();
                         int pin = dis.readInt();
-                        int balance = database.checkSaldo(iban, pin);
-                        dos.writeInt(balance);
+                        if (ibanCheck.equals("SUMYBK")) {
+                            int balance = database.checkSaldo(iban, pin);
+                            dos.writeInt(balance);
+                        } else {
+                            dos.writeInt(500);
+                        }
                         break;
                     case "withdraw":
                         comm.setAmount(Integer.parseInt(dis.readUTF()));
-                        int balance2 = database.checkSaldo(comm.getIban(), comm.getPin());
-                        if (balance2 - comm.getAmount() >= 0) {
-                            database.withdraw(comm.getIban(), comm.getPin(), comm.getAmount());
-                            dos.writeBoolean(true);
-                            comm.setIban("");
-                            comm.setPin(0);
-                            comm.setAmount(0);
+                        if (ibanCheck.equals("SUMYBK") {
+                            int balance2 = database.checkSaldo(comm.getIban(), comm.getPin());
+                            if (balance2 - comm.getAmount() >= 0) {
+                                database.withdraw(comm.getIban(), comm.getPin(), comm.getAmount());
+                                dos.writeBoolean(true);
+                                comm.setIban("");
+                                comm.setPin(0);
+                                comm.setAmount(0);
+                            } else {
+                                dos.writeBoolean(false);
+                            }
                         } else {
-                            dos.writeBoolean(false);
+                            master.setAmount(dis.readUTF());
+                            object = master.withdraw();
+                            master.sendText(ibanCheck, object);
+                            if (Boolean.parseBoolean(master.getMessage())) {
+                                dos.writeBoolean("true");
+                                comm.setIban("");
+                                comm.setPin(0);
+                                comm.setAmount(0);
+                            } else {
+                                dos.write("false");
+                            }
                         }
                         break;
                     case "reset":
@@ -104,8 +119,12 @@ public class ClientHandler extends Thread {
                         }
                         break;
                     case "updateAttempts":
-                        comm.setAttempts(dis.readInt());
-                        database.updateAttempts(comm.getAttempts(), comm.getIban());
+                        if (ibanCheck.equals("SUMYBK") {
+                            comm.setAttempts(dis.readInt());
+                            database.updateAttempts(comm.getAttempts(), comm.getIban());
+                        } else {
+                            comm.setAttemps(dis.readInt());
+                        }
                         break;
                     case "checkBlocked":
                         dos.writeBoolean(database.checkBlocked(comm.getIban()));
