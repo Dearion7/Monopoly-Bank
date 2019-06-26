@@ -30,8 +30,8 @@ public class Master implements Runnable {
         this.pin = pin;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public String getMessage() {
+        return message
     }
 
     /* NOOB server connection */
@@ -68,6 +68,7 @@ public class Master implements Runnable {
     @OnMessage
     public void onMessage( String message) {
         System.out.println ("Received msg: " + message);
+        this.message = message;
     }
 
     private static void  waitForTerminationSignal () {
