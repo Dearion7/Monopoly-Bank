@@ -123,7 +123,7 @@ public class ClientHandler extends Thread {
                             comm.setAttempts(dis.readInt());
                             database.updateAttempts(comm.getAttempts(), comm.getIban());
                         } else {
-                            comm.setAttemps(dis.readInt());
+                            comm.setAttempts(dis.readInt());
                         }
                         break;
                     case "checkBlocked":
