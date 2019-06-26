@@ -81,7 +81,7 @@ public class Database {
         return -1;
     }
 
-    void withdraw(String iban, int pin, int amount) {
+    boolean withdraw(String iban, int pin, int amount) {
         try {
             connection = connect();
 
@@ -100,9 +100,11 @@ public class Database {
             System.out.println("Statement success");
             preparedStatement.close();
             close();
+            return true;
         } catch(SQLException se){
             //Handle errors for JDBC
             se.printStackTrace();
+            return false;
         } finally{
             //finally block used to close resources
             try{
