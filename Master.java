@@ -7,10 +7,10 @@ public class Master implements Runnable {
 
     private static Object waitLock = new Object ();
 
-    private String bankName = "SUMYBK";
-    private String iban = "SU74MYBK320461";
-    private String pin = "5246";
-    private String amount = "10";
+    private String bankName = null;
+    private String iban = null;
+    private String pin = null;
+    private String amount = null;
     private String message = null;
 
     /* Setters */
@@ -45,9 +45,10 @@ public class Master implements Runnable {
         object.put("IBAN", iban);
         object.put("PIN", pin);
         object.put("Amount", amount);
-
+        String temp = object.toString();
         return object;
     }
+    
     public JSONObject checkPin() {
         JSONObject object = new JSONObject();
 
@@ -56,10 +57,14 @@ public class Master implements Runnable {
         object.put("Func", "checkPin");
         object.put("IBAN", iban);
         object.put("PIN", pin);
-
+        String temp = object.toString();
         return object;
     }
 
+    public void sendText(String bankName, JSONObject object) {
+        session.getAsyncRemote().sendText("[\"" + bankName + "\"," + object + "]");
+    }
+    
     @OnMessage
     public void onMessage( String message) {
         System.out.println ("Received msg: " + message);
@@ -84,7 +89,6 @@ public class Master implements Runnable {
             container = ContainerProvider.getWebSocketContainer();
             session = container.connectToServer (this, URI.create ("ws://145.24.222.24:8080"));
             session.getAsyncRemote () .sendText ("[\"register\", \"master\", \"SUMYBK\"]");
-            session.getAsyncRemote().sendText("[\"" + bankName + "\"," + withdraw() + "]");
             waitForTerminationSignal ();
         }
         catch (Exception exception) {
