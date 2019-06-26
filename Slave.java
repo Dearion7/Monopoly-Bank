@@ -97,7 +97,7 @@ public class Slave implements Runnable {
         try{
             container = ContainerProvider.getWebSocketContainer ();
             session = container.connectToServer (this, URI.create ("ws://145.24.222.24:8080"));
-            session.getAsyncRemote () .sendText ("[\"register\", \"slave\", \"MYBK\"]");
+            session.getAsyncRemote () .sendText ("[\"register\", \"slave\", \"SUMYBK\"]");
             waitForTerminationSignal ();
         }
         catch (Exception exception) {
