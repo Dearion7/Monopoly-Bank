@@ -8,6 +8,7 @@ public class Slave implements Runnable {
     private String[] valuables;
     prvate Database database;
     private String IDRecBank = "";
+    Communication comm = new Communication;
     
     Slave(Database database) {
         this.database = database;
