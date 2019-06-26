@@ -6,7 +6,7 @@ import java.io.IOException;
 public class Slave implements Runnable {
     private static Object waitLock = new Object ();
     private String[] valuables;
-    prvate Database database;
+    private Database database;
     private String IDRecBank = "";
     Communication comm = new Communication();
     
