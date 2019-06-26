@@ -52,7 +52,7 @@ public class Slave implements Runnable {
         String Func = valuables[15];
         String IDRecBank = valuables[19];
         System.out.println(IDSendBank + " ask for a pin check.");
-        if (database.checkPin(IBAN, Integer.parseInt(Pin)) {
+        if (database.checkPin(IBAN, Integer.parseInt(Pin) && !database.checkBocked(IBAN)) {
             return "true";
         } else {
             return "false";
