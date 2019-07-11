@@ -97,7 +97,7 @@ public class Database {
             preparedStatement.setString(2, iban);
             preparedStatement.setInt(3, amount);
             preparedStatement.executeUpdate();
-            System.out.println("Statement success");
+            System.out.println("Statement success with transaction");
             preparedStatement.close();
             close();
             return true;

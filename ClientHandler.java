@@ -36,7 +36,7 @@ public class ClientHandler extends Thread {
             try {
                 // Get message from cliets
                 message = dis.readUTF();
-
+		System.out.println(message);
                 // close connection when client send "EXIT"
                 if (message.equals("Exit")) {
                     System.out.println("Closing client");
@@ -48,11 +48,13 @@ public class ClientHandler extends Thread {
                 switch (message) {
                     case "iban":
                         comm.setIban(dis.readUTF());
-                        String landCode = comm.getIban().substring(0, 2);
+                        //System.out.println(dis.readUTF());
+			String landCode = comm.getIban().substring(0, 2);
                         String bankCode = comm.getIban().substring(4, 8);
                         ibanCheck = landCode + bankCode;
+			ibanCheck = ibanCheck.toLowerCase();
                         System.out.println(ibanCheck);
-                        if (ibanCheck.equals("SUMYBK")) {
+                        if (ibanCheck.equals("sumybk")) {
                             dos.writeBoolean(database.checkIban(comm.getIban()));
                             break;
                         } else {
@@ -64,7 +66,7 @@ public class ClientHandler extends Thread {
                     case "pin":
                         boolean checked;
                         comm.setPin(dis.readInt());
-                        if (ibanCheck.equals("SUMYBK")) {
+                        if (ibanCheck.equals("sumybk")) {
                             checked = database.checkPin(comm.getIban(), comm.getPin());
                         } else {
                             master.setPin(String.valueOf(comm.getPin()));
@@ -77,7 +79,7 @@ public class ClientHandler extends Thread {
                     case "balance":
                         String iban = dis.readUTF();
                         int pin = dis.readInt();
-                        if (ibanCheck.equals("SUMYBK")) {
+                        if (ibanCheck.equals("sumybk")) {
                             int balance = database.checkSaldo(iban, pin);
                             dos.writeInt(balance);
                         } else {
@@ -86,7 +88,8 @@ public class ClientHandler extends Thread {
                         break;
                     case "withdraw":
                         comm.setAmount(Integer.parseInt(dis.readUTF()));
-                        if (ibanCheck.equals("SUMYBK")) {
+                        System.out.println(comm.getAmount());
+			if (ibanCheck.equals("sumybk")) {
                             int balance2 = database.checkSaldo(comm.getIban(), comm.getPin());
                             if (balance2 - comm.getAmount() >= 0) {
                                 database.withdraw(comm.getIban(), comm.getPin(), comm.getAmount());
@@ -119,7 +122,7 @@ public class ClientHandler extends Thread {
                         }
                         break;
                     case "updateAttempts":
-                        if (ibanCheck.equals("SUMYBK")) {
+                        if (ibanCheck.equals("sumybk")) {
                             comm.setAttempts(dis.readInt());
                             database.updateAttempts(comm.getAttempts(), comm.getIban());
                         } else {
